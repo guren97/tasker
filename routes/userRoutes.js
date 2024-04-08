@@ -11,11 +11,12 @@ import {
   setUser,
 } from "../controllers/userController.js";
 
-userRouter.route("/").post(setUser);
-userRouter.route("/").get(protect, getUsers);
+userRouter.route("/").post(setUser); // Register a new user
 userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(logoutUser);
 
+// Protected Routes
+userRouter.route("/").get(protect, getUsers);
 userRouter.route("/current").get(protect, getCurrentUser);
 
 export default userRouter;
