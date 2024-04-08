@@ -1,5 +1,7 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
+import generateToken from "../utils/generateToken.js";
+import ErrorResponse from "../utils/errorResponse.js";
 
 import User from "../models/UserSchema.js";
 
@@ -14,10 +16,7 @@ const setUser = asyncHandler(async (req, res, next) => {
         existingUser.username === username
           ? "Username already exists"
           : "Email already exists";
-      return res.status(400).json({
-        success: false,
-        message,
-      });
+      return next(new ErrorResponse(message, 401));
     }
 
     // create new user
@@ -29,17 +28,11 @@ const setUser = asyncHandler(async (req, res, next) => {
       password,
     });
 
-    //return created user
-    res.status(201).json({
-      success: true,
-      user,
-    });
+    if (user) {
+      generateToken(user, 201, res); // Call generateToken function here
+    }
   } catch (error) {
-    // return server connection error
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    return next(new ErrorResponse("Server error", 500)); // Send error response here
   }
 });
 
@@ -48,21 +41,14 @@ const getUsers = asyncHandler(async (req, res, next) => {
     const users = await User.find();
     // if there are no users on database
     if (!users) {
-      return res.status(404).json({
-        success: false,
-        error: "No users found",
-      });
+      return next(new ErrorResponse("No users found", 404));
     }
     res.status(200).json({
       success: true,
       users,
     });
   } catch (error) {
-    // return server connection error
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    next(new ErrorResponse("Server error", 500));
   }
 });
 
@@ -73,31 +59,30 @@ const loginUser = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: "User not found",
-      });
+      return next(new ErrorResponse("User not found", 404));
     }
 
     const matchedPassword = await bcrypt.compare(password, user.password);
 
     if (!matchedPassword) {
-      return res.status(401).json({
-        success: false,
-        error: "Wrong password",
-      });
+      return next(new ErrorResponse("Wrong password", 401));
     }
 
-    res.status(200).json({
-      success: true,
-      message: `Hello ${user.first_name}, you are logged in.`,
-    });
+    if (user) {
+      generateToken(user, 201, res); // Call generateToken function here
+    }
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    console.error("Error in setUser:", error);
+    return next(new ErrorResponse("Server error", 500)); // Use return statement to exit the function
   }
 });
 
-export { setUser, getUsers, loginUser };
+const logoutUser = asyncHandler(async (req, res, next) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "User logged out" });
+});
+
+export { setUser, getUsers, loginUser, logoutUser };
