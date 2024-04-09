@@ -2,7 +2,6 @@ import asyncHandler from "express-async-handler";
 import ErrorResponse from "../utils/errorResponse.js";
 
 import Task from "../models/TaskSchema.js";
-import User from "../models/UserSchema.js";
 
 /**
  * Middleware to create a new task.
@@ -44,10 +43,7 @@ const getTasks = asyncHandler(async (req, res, next) => {
 
     // Check if tasks exist
     if (!tasks || tasks.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: "No tasks found.",
-      });
+      return next(new ErrorResponse("No tasks found", 404));
     }
 
     // Send success response with the retrieved tasks
@@ -70,19 +66,13 @@ const getTasks = asyncHandler(async (req, res, next) => {
  */
 const getUserTasks = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
-
   try {
     // Retrieve tasks associated with the specified user
     const tasks = await Task.find({ author: user });
-
     // Check if tasks exist
     if (!tasks || tasks.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: "No tasks found.",
-      });
+      return next(new ErrorResponse("No tasks found", 404));
     }
-
     // Send success response with the retrieved tasks
     res.status(200).json({
       success: true,
@@ -112,10 +102,7 @@ const updateTask = asyncHandler(async (req, res, next) => {
 
     // Check if the task exists
     if (!task) {
-      return res.status(404).json({
-        success: false,
-        error: "Task not found",
-      });
+      return next(new ErrorResponse("Task not found", 404));
     }
     // Check if the task belongs to the authenticated user
     if (task.author.toString() !== userId) {
@@ -159,10 +146,7 @@ const deleteTask = asyncHandler(async (req, res, next) => {
 
     // Check if the task exists
     if (!task) {
-      return res.status(404).json({
-        success: false,
-        error: "Task not found",
-      });
+      return next(new ErrorResponse("Task not found", 404));
     }
 
     // Check if the task belongs to the authenticated user

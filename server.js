@@ -18,6 +18,7 @@ app.use("/api/v1/tasks", taskRouter);
 
 app.use(notFound);
 app.use(errorHandler);
+
 const startServer = async () => {
   const PORT = process.env.PORT || 5000;
   try {

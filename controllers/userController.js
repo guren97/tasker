@@ -20,11 +20,11 @@ const setUser = asyncHandler(async (req, res, next) => {
     // Check if user with same username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      const message =
+      const isExists =
         existingUser.username === username
           ? "Username already exists"
           : "Email already exists";
-      return next(new ErrorResponse(message, 401));
+      return next(new ErrorResponse(isExists, 401));
     }
 
     // Create new user
@@ -91,9 +91,8 @@ const getCurrentUser = asyncHandler(async (req, res, next) => {
     if (!user) {
       return next(new ErrorResponse("User not found", 404));
     }
-
     // Send the user data in the response
-    res.status(200).json({ user });
+    res.status(200).json({ loggedin_user: user });
   } catch (error) {
     // Handle server errors
     return next(new ErrorResponse("Server Error", 500));
