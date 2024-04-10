@@ -18,14 +18,8 @@ const Header = () => {
 
   const logoutHandler = async () => {
     try {
-      // Perform logout API call here
-      // For example:
-      await logoutApiCall(); // Make sure logoutApiCall is properly defined
-
-      // Dispatch the logout action
+      await logoutApiCall();
       dispatch(logout());
-
-      // Navigate to the home page
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -65,7 +59,7 @@ const Header = () => {
               }`}
             >
               <li>
-                <h1 className="font-bold">{userInfo.username}</h1>
+                <h1 className="font-bold">{userInfo && userInfo.username}</h1>
               </li>
               <li>
                 <Link to="#" onClick={logoutHandler}>

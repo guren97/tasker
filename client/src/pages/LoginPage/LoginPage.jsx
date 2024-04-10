@@ -48,7 +48,7 @@ const LoginPage = () => {
     <div className="flex bg-white items-center justify-center h-screen">
       <form
         onSubmit={handleLogin}
-        className="bg-white shadow-md w-96 rounded px-8 pt-6 pb-8 mb-4"
+        className="bg-white border w-96 rounded px-8 pt-6 pb-8 mb-4"
       >
         <h2 className="text-2xl font-bold mb-8">Login</h2>
         <div className="mb-4">
@@ -59,7 +59,7 @@ const LoginPage = () => {
             Email:
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="email"
             type="email"
             value={formData.email}
@@ -75,7 +75,7 @@ const LoginPage = () => {
             Password:
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="password"
             type="password"
             value={formData.password}

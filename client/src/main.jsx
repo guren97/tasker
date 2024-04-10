@@ -12,6 +12,8 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage.jsx";
 import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 
+import PrivateRoute from "./components/PrivateRoute.jsx";
+
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -23,10 +25,13 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/" element={<HomePage />}></Route>
-      <Route path="/dashboard" element={<Dashboard />}></Route>
       <Route path="/login" element={<LoginPage />}></Route>
       <Route path="/register" element={<RegisterPage />}></Route>
       <Route path="/notfound" element={<NotFoundPage />}></Route>
+      {/* Private Route */}
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/dashboard" element={<Dashboard />}></Route>
+      </Route>
     </Route>
   )
 );
