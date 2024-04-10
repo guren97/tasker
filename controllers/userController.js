@@ -125,13 +125,12 @@ const loginUser = asyncHandler(async (req, res, next) => {
       // Send error response if password is incorrect
       return next(new ErrorResponse("Wrong password", 401));
     }
-
+    // Proceed logging in user if the Passwords matched
     if (user) {
       // Generate token for the authenticated user
       generateToken(user, 201, res);
     }
   } catch (error) {
-    console.error("Error in setUser:", error);
     // Send server error response
     return next(new ErrorResponse("Server error", 500));
   }
@@ -153,4 +152,94 @@ const logoutUser = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "User logged out" });
 });
 
-export { setUser, getUsers, getCurrentUser, loginUser, logoutUser };
+/**
+ * Middleware to update a user
+ * param {object} req - Express request object
+ * param {object} res - Express response object
+ * param {function} next - Express next function
+ * returns {void} - Void function
+ */
+const updateUser = asyncHandler(async (req, res, next) => {
+  const { first_name, last_name, email } = req.body;
+  const userId = req.params.id;
+  const currentUserId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorResponse("User not found", 404));
+    }
+
+    if (user._id.toString() !== currentUserId) {
+      return next(
+        new ErrorResponse("User not authorized to update this profile", 401)
+      );
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        first_name,
+        last_name,
+        email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      updatedUser,
+    });
+  } catch (error) {
+    return next(new ErrorResponse("Server error", 500));
+  }
+});
+
+/**
+ * Middleware to delete a user
+ * param {object} req - Express request object
+ * param {object} res - Express response object
+ * param {function} next - Express next function
+ * returns {void} - Void function
+ */
+const deleteUser = asyncHandler(async (req, res, next) => {
+  const userId = req.params.id;
+  const currentUserId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorResponse("User not found", 404));
+    }
+
+    if (user._id.toString() !== currentUserId) {
+      return next(
+        new ErrorResponse("User not authorized to delete this profile", 401)
+      );
+    }
+
+    const deleteUser = await User.findByIdAndDelete(userId);
+
+    if (deleteUser) {
+      res.status(201).json({
+        success: true,
+        message: "User deleted",
+      });
+    }
+  } catch (error) {
+    return next(new ErrorResponse("Server error", 500));
+  }
+});
+
+export {
+  setUser,
+  getUsers,
+  getCurrentUser,
+  loginUser,
+  logoutUser,
+  updateUser,
+  deleteUser,
+};
