@@ -13,7 +13,7 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 
-userRouter.route("/").post(setUser); // Register a new user
+userRouter.route("/register").post(setUser); // Register a new user
 userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(logoutUser);
 

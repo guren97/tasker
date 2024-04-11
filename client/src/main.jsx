@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import store from "./stote/store.js";
+import store from "./store/store.js";
 import { Provider } from "react-redux";
 
 import "./index.css";
@@ -24,7 +24,7 @@ import {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route path="/" element={<HomePage />}></Route>
+      {/* <Route path="/" element={<HomePage />}></Route> */}
       <Route path="/login" element={<LoginPage />}></Route>
       <Route path="/register" element={<RegisterPage />}></Route>
       <Route path="/notfound" element={<NotFoundPage />}></Route>

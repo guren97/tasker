@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../../slices/usersApiSlice.js";
 import { setCredentials } from "../../slices/authSlice.js";
-import { toast } from "react-toastify";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label.jsx";
+
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -41,9 +46,8 @@ const RegisterPage = () => {
       dispatch(setCredentials({ res }));
       navigate("/dashboard");
     } catch (err) {
-      let errorMessage = ""; // Default error message
+      let errorMessage = "";
       if (err && err.data && err.data.error) {
-        // If the error response contains an 'error' field
         errorMessage = err.data.error;
       }
       toast.error(errorMessage);
@@ -54,18 +58,12 @@ const RegisterPage = () => {
     <div className="flex items-center justify-center h-screen">
       <form
         onSubmit={handleRegister}
-        className="bg-white shadow-md w-96 rounded px-8 pt-6 pb-8 mb-4"
+        className="bg-white w-96 border rounded px-8 pt-6 pb-8 mb-4"
       >
-        <h2 className="text-2xl font-bold mb-8">Register</h2>
+        <h2 className="text-2xl font-bold mb-6">Register</h2>
         <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="username"
-          >
-            Username:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="username">Username</Label>
+          <Input
             id="username"
             type="text"
             value={formData.username}
@@ -74,14 +72,8 @@ const RegisterPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="first_name"
-          >
-            First Name:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="first_name">First Name</Label>
+          <Input
             id="first_name"
             type="text"
             value={formData.first_name}
@@ -90,14 +82,8 @@ const RegisterPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="last_name"
-          >
-            Last Name:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="last_name">Last Name</Label>
+          <Input
             id="last_name"
             type="text"
             value={formData.last_name}
@@ -106,14 +92,8 @@ const RegisterPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="email">Email</Label>
+          <Input
             id="email"
             type="email"
             value={formData.email}
@@ -122,14 +102,8 @@ const RegisterPage = () => {
           />
         </div>
         <div className="mb-6">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
-            Password:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="password">Password</Label>
+          <Input
             id="password"
             type="password"
             value={formData.password}
@@ -139,12 +113,10 @@ const RegisterPage = () => {
           />
         </div>
         <div className="flex items-center justify-between">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
+          <Button type="submit">Register</Button>
+          <Link to="/login" className="text-sm font-semibold">
             Register
-          </button>
+          </Link>
         </div>
       </form>
     </div>

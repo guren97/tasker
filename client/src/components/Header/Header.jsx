@@ -14,6 +14,7 @@ const Header = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {
@@ -59,7 +60,7 @@ const Header = () => {
               }`}
             >
               <li>
-                <h1 className="font-bold">{userInfo && userInfo.username}</h1>
+                <h1 className="font-bold">{userInfo.username}</h1>
               </li>
               <li>
                 <Link to="#" onClick={logoutHandler}>

@@ -115,7 +115,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
     if (!user) {
       // Send error response if user not found
-      return next(new ErrorResponse("User not found", 404));
+      return next(new ErrorResponse("Invalid email", 401));
     }
 
     // Compare passwords
@@ -125,9 +125,10 @@ const loginUser = asyncHandler(async (req, res, next) => {
       // Send error response if password is incorrect
       return next(new ErrorResponse("Wrong password", 401));
     }
-    // Proceed logging in user if the Passwords matched
+
+    // Proceed logging in user if the passwords matched
+    // Generate token for the authenticated user
     if (user) {
-      // Generate token for the authenticated user
       generateToken(user, 201, res);
     }
   } catch (error) {

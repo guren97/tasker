@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../../slices/usersApiSlice.js";
 import { setCredentials } from "../../slices/authSlice.js";
-import { toast } from "react-toastify";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label.jsx";
+
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,7 +25,7 @@ const LoginPage = () => {
     if (userInfo) {
       navigate("/dashboard");
     }
-  }, [navigate, userInfo]);
+  }, [userInfo, navigate]);
 
   const handleChange = (e) => {
     setFormData((formData) => ({
@@ -52,14 +58,8 @@ const LoginPage = () => {
       >
         <h2 className="text-2xl font-bold mb-8">Login</h2>
         <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email:
-          </label>
-          <input
-            className="  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="email">Email</Label>
+          <Input
             id="email"
             type="email"
             value={formData.email}
@@ -68,14 +68,8 @@ const LoginPage = () => {
           />
         </div>
         <div className="mb-6">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
-            Password:
-          </label>
-          <input
-            className="  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <Label htmlFor="password">Password</Label>
+          <Input
             id="password"
             type="password"
             value={formData.password}
@@ -85,12 +79,11 @@ const LoginPage = () => {
           />
         </div>
         <div className="flex items-center justify-between">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Sign In
-          </button>
+          <Button type="submit">Sign In</Button>
+
+          <Link to="/register" className="text-sm font-semibold">
+            Register
+          </Link>
         </div>
       </form>
     </div>
