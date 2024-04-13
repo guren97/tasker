@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label.jsx";
 import { toast } from "sonner";
 
 const RegisterPage = () => {
+  // State for storing form data
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
@@ -19,12 +20,16 @@ const RegisterPage = () => {
     password: "",
   });
 
+  const { userInfo } = useSelector((state) => state.auth);
+
+  // Hook for navigation
   const navigate = useNavigate();
+
+  // Redux dispatch hook
   const dispatch = useDispatch();
 
-  const [register, { isLoading }] = useRegisterMutation();
-
-  const { userInfo } = useSelector((state) => state.auth || {});
+  // Mutation hook for register API
+  const [register] = useRegisterMutation();
 
   useEffect(() => {
     if (userInfo) {
@@ -32,6 +37,7 @@ const RegisterPage = () => {
     }
   }, [navigate, userInfo]);
 
+  // Function to handle form input changes
   const handleChange = (e) => {
     setFormData((formData) => ({
       ...formData,
@@ -39,17 +45,27 @@ const RegisterPage = () => {
     }));
   };
 
+  // Function to handle form submission
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
+      // Call register API mutation
       const res = await register({ ...formData }).unwrap();
-      dispatch(setCredentials({ res }));
+
+      // Dispatch action to set user credentials in Redux store
+      dispatch(setCredentials({ ...res }));
+
+      // Navigate to dashboard page on successful registration
       navigate("/dashboard");
     } catch (err) {
-      let errorMessage = "";
+      let errorMessage = ""; // Default error message
+
+      // Check if error response contains an 'error' field
       if (err && err.data && err.data.error) {
         errorMessage = err.data.error;
       }
+
+      // Display error toast message
       toast.error(errorMessage);
     }
   };
@@ -114,8 +130,10 @@ const RegisterPage = () => {
         </div>
         <div className="flex items-center justify-between">
           <Button type="submit">Register</Button>
+
+          {/* Link to login page */}
           <Link to="/login" className="text-sm font-semibold">
-            Register
+            Login
           </Link>
         </div>
       </form>

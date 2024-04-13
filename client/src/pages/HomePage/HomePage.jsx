@@ -1,7 +1,9 @@
+import LoginPage from "../LoginPage/LoginPage.jsx";
+
 const HomePage = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">Home Page</h1>
+      <LoginPage />
     </div>
   );
 };

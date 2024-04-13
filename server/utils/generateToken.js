@@ -10,11 +10,9 @@ const generateToken = async (user, statusCode, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
-      maxAge: 10 * 60 * 1000,
+      maxAge: 30 * 60 * 1000,
       path: "/",
     });
-
-    res.status(statusCode).json({ success: true, token });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

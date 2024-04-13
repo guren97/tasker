@@ -11,22 +11,27 @@ import { Label } from "@/components/ui/label.jsx";
 import { toast } from "sonner";
 
 const LoginPage = () => {
+  // State for storing form data
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [isLoading, setIsLoading] = useState(false);
 
+  const { userInfo } = useSelector((state) => state.auth);
+
+  // Hook for navigation
   const navigate = useNavigate();
+
+  // Redux dispatch hook
   const dispatch = useDispatch();
 
+  // Mutation hook for login API
   const [login] = useLoginMutation();
-
-  const { userInfo } = useSelector((state) => state.auth || {});
 
   useEffect(() => {
     if (userInfo) {
       navigate("/dashboard");
     }
-  }, [userInfo, navigate]);
+  }, [navigate, userInfo]);
 
+  // Function to handle form input changes
   const handleChange = (e) => {
     setFormData((formData) => ({
       ...formData,
@@ -34,18 +39,27 @@ const LoginPage = () => {
     }));
   };
 
+  // Function to handle form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // Call login API mutation
       const res = await login({ ...formData }).unwrap();
-      dispatch(setCredentials({ res }));
+
+      // Dispatch action to set user credentials in Redux store
+      dispatch(setCredentials({ ...res }));
+
+      // Navigate to dashboard page on successful login
       navigate("/dashboard");
     } catch (err) {
       let errorMessage = ""; // Default error message
+
+      // Check if error response contains an 'error' field
       if (err && err.data && err.data.error) {
-        // If the error response contains an 'error' field
         errorMessage = err.data.error;
       }
+
+      // Display error toast message
       toast.error(errorMessage);
     }
   };
@@ -81,6 +95,7 @@ const LoginPage = () => {
         <div className="flex items-center justify-between">
           <Button type="submit">Sign In</Button>
 
+          {/* Link to register page */}
           <Link to="/register" className="text-sm font-semibold">
             Register
           </Link>

@@ -9,34 +9,51 @@ import { useLogoutMutation } from "../../slices/usersApiSlice.js";
 import { logout } from "../../slices/authSlice.js";
 
 const Header = () => {
+  // State to manage dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Redux selector to get user info
   const { userInfo } = useSelector((state) => state.auth);
 
+  // Navigation hook
   const navigate = useNavigate();
+
+  // Redux dispatch hook
   const dispatch = useDispatch();
 
+  // Logout mutation hook
   const [logoutApiCall] = useLogoutMutation();
 
+  // Function to handle logout
   const logoutHandler = async () => {
     try {
-      await logoutApiCall();
-      dispatch(logout());
-      navigate("/");
+      setTimeout(async () => {
+        // Call logout API mutation
+        await logoutApiCall();
+
+        // Dispatch logout action to clear user info from Redux store
+        dispatch(logout());
+
+        // Navigate to home page after logout
+        navigate("/", { replace: true });
+      }, 1000); // 1 second timeout
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Function to toggle dark mode
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  // Effect hook to set initial dark mode based on system preference
   useEffect(() => {
     const prefersDarkMode =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
     setIsDarkMode(prefersDarkMode);
   }, []);
-
-  const toggleTheme = () => {
-    setIsDarkMode((prevMode) => !prevMode);
-  };
 
   return (
     <nav
@@ -54,33 +71,39 @@ const Header = () => {
         </div>
         <div className="flex justify-between items-center align-middle">
           {userInfo ? (
-            <ul
-              className={`flex space-x-4 ${
-                isDarkMode ? "text-white" : "text-black"
-              }`}
-            >
-              <li>
-                <h1 className="font-bold">{userInfo.username}</h1>
-              </li>
-              <li>
-                <Link to="#" onClick={logoutHandler}>
-                  Logout
-                </Link>
-              </li>
-            </ul>
+            <>
+              <ul
+                className={`flex space-x-4 ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
+              >
+                <li className="relative">
+                  <Link to="#" className="cursor-pointer">
+                    {userInfo.username}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="#" onClick={logoutHandler}>
+                    Logout
+                  </Link>
+                </li>
+              </ul>
+            </>
           ) : (
-            <ul
-              className={`flex space-x-4 ${
-                isDarkMode ? "text-white" : "text-black"
-              }`}
-            >
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
-            </ul>
+            <>
+              <ul
+                className={`flex space-x-4 ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
+              >
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+                <li>
+                  <Link to="/register">Register</Link>
+                </li>
+              </ul>
+            </>
           )}
 
           <ThemeToggler toggleTheme={toggleTheme} isDarkMode={isDarkMode} />

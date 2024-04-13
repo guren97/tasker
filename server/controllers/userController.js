@@ -37,8 +37,12 @@ const setUser = asyncHandler(async (req, res, next) => {
     });
 
     if (user) {
-      // Generate token for the newly registered user
       generateToken(user, 201, res);
+      res.status(201).json({
+        _id: user.id,
+        username: user.username,
+        email: user.email,
+      });
     }
   } catch (error) {
     // Send server error response
@@ -79,8 +83,14 @@ const getUsers = asyncHandler(async (req, res, next) => {
  * param {function} next - Express next function
  * returns {Promise<void>} - Promise representing the completion of the operation
  */
+
 const getCurrentUser = asyncHandler(async (req, res, next) => {
   try {
+    // Verify if user exists in the request object
+    if (!req.user || !req.user.id) {
+      return next(new ErrorResponse("User not found in request", 404));
+    }
+
     // Retrieve the user ID from the decoded JWT token
     const userId = req.user.id;
 
@@ -91,6 +101,7 @@ const getCurrentUser = asyncHandler(async (req, res, next) => {
     if (!user) {
       return next(new ErrorResponse("User not found", 404));
     }
+
     // Send the user data in the response
     res.status(200).json({ loggedin_user: user });
   } catch (error) {
@@ -130,6 +141,11 @@ const loginUser = asyncHandler(async (req, res, next) => {
     // Generate token for the authenticated user
     if (user) {
       generateToken(user, 201, res);
+      res.status(201).json({
+        _id: user.id,
+        username: user.username,
+        email: user.email,
+      });
     }
   } catch (error) {
     // Send server error response
