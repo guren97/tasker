@@ -11,10 +11,10 @@ import {
   updateTask,
 } from "../controllers/taskController.js";
 
-taskRouter.route("/").post(protect, setTask);
-taskRouter.route("/").get(protect, getTasks);
+taskRouter.route("/new").post(protect, setTask);
+taskRouter.route("/tasks").get(protect, getTasks);
 taskRouter.route("/mytasks").get(protect, getUserTasks);
-taskRouter.route("/:id").put(protect, updateTask);
-taskRouter.route("/:id").delete(protect, deleteTask);
+taskRouter.route("/task/:id").put(protect, updateTask);
+taskRouter.route("/task/:id").delete(protect, deleteTask);
 
 export default taskRouter;

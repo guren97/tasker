@@ -17,12 +17,13 @@ const setTask = asyncHandler(async (req, res, next) => {
   try {
     // Create a new task with the provided title, description, and user ID
     const task = await Task.create({ title, description, author: user });
-
-    // Send success response with the created task
-    res.status(201).json({
-      success: true,
-      task,
-    });
+    if (task) {
+      // Send success response with the created task
+      res.status(201).json({
+        success: true,
+        task,
+      });
+    }
   } catch (error) {
     // Handle server error
     return next(new ErrorResponse("Server Error", 500));

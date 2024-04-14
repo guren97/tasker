@@ -16,10 +16,7 @@ const LoginPage = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  // Hook for navigation
   const navigate = useNavigate();
-
-  // Redux dispatch hook
   const dispatch = useDispatch();
 
   // Mutation hook for login API

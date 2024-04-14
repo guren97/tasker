@@ -10,7 +10,7 @@ const generateToken = async (user, statusCode, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
-      maxAge: 30 * 60 * 1000,
+      maxAge: 10 * 60 * 1000,
       path: "/",
     });
   } catch (error) {

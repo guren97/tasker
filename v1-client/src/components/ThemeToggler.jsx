@@ -5,7 +5,7 @@ const ThemeToggler = ({ isDarkMode, toggleTheme }) => {
   return (
     <div className="sm:hidden md:inline-block lg:inline-block">
       <div
-        className="ml-5 p-1 flex items-center justify-center align-middle hover:bg-neutral-200 dark:hover:bg-neutral-300 rounded-lg transition duration-200"
+        className="ml-5 p-1 flex items-center justify-center align-middle hover:bg-teal-200 dark:hover:bg-neutral-300 rounded-lg transition duration-200"
         onClick={toggleTheme} // Move the onClick event to the outer div
       >
         <motion.div whileTap={{ scale: 0.8 }}>
