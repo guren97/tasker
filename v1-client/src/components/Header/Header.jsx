@@ -9,9 +9,12 @@ import { logout } from "../../slices/authSlice.js";
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const { userInfo } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {

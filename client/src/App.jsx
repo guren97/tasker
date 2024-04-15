@@ -1,28 +1,18 @@
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header/Header.jsx";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <div
       className="w-full bg-gray-50 overflow-y-auto"
-      style={{ "-ms-overflow-style": "none", "scrollbar-width": "none" }}
+      style={{ OverflowStyle: "none", scrollbarWidth: "none" }}
     >
       <Header />
       <main className="mx-auto max-w-7xl px-6 py-6 lg:px-6">
+        <Toaster />
         <Outlet />
       </main>
-      <style>
-        {`
-           
-          ::-webkit-scrollbar {
-            display: none;
-          }
-
-          /* Hide scrollbar for IE, Edge, and Firefox */
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-        `}
-      </style>
     </div>
   );
 }

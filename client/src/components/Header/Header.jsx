@@ -1,12 +1,35 @@
+import logo_dark from "../../assets/logo/logo_dark.svg";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo_dark from "../../assets/logo/logo_dark.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { useLogoutMutation } from "../../redux/slices/usersApiSlice.js";
+import { logout } from "../../redux/slices/authSlice.js";
 
 import NavLink from "./NavLink.jsx";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { userInfo } = useSelector((state) => state.auth);
+  const [logoutApiCall] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    try {
+      setTimeout(async () => {
+        await logoutApiCall();
+        dispatch(logout());
+        navigate("/", { replace: true });
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleMenu = () => {
     setIsOpen(!isOpen); // Toggle isOpen state
@@ -59,20 +82,34 @@ const Header = () => {
           </div>
           <NavLink to="/">Articles</NavLink>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
-          <NavLink
-            to="/login"
-            className={`border px-3 py-1 rounded-md hover:bg-gray-200`}
-          >
-            Log in
-          </NavLink>
-          <NavLink
-            to="/signup"
-            className={`bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-400`}
-          >
-            Sign up
-          </NavLink>
-        </div>
+        {userInfo ? (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
+            <NavLink to="#" className={`  px-3 py-1 text-md font-semibold`}>
+              {userInfo.username}
+            </NavLink>
+            <NavLink
+              className={`border px-3 py-1 rounded-md hover:bg-gray-200`}
+              onClick={logoutHandler}
+            >
+              Logout
+            </NavLink>
+          </div>
+        ) : (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
+            <NavLink
+              to="/login"
+              className={`border px-3 py-1 rounded-md hover:bg-gray-200`}
+            >
+              Log in
+            </NavLink>
+            <NavLink
+              to="/signup"
+              className={`bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-400`}
+            >
+              Sign up
+            </NavLink>
+          </div>
+        )}
       </nav>
 
       {/* Mobile menu */}
@@ -129,20 +166,33 @@ const Header = () => {
                     Articles
                   </Link>
                 </div>
-                <div className="py-6">
-                  <Link
-                    to="/login"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 "
-                  >
-                    Sign up
-                  </Link>
-                </div>
+                {userInfo ? (
+                  // If user is logged in, show logout button
+                  <div className="py-6">
+                    <Link
+                      onClick={logoutHandler}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Logout
+                    </Link>
+                  </div>
+                ) : (
+                  // If user is not logged in, show login and signup buttons
+                  <div className="py-6">
+                    <Link
+                      to="/login"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 "
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
