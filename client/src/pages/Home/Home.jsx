@@ -3,7 +3,7 @@ import { IoFilter } from "react-icons/io5";
 
 const Home = () => {
   return (
-    <div className="py-16 flex flex-col lg:flex-row lg:justify-between lg:gap-16">
+    <div className="py-16 flex flex-col lg:flex-row lg:justify-between lg:gap-8">
       <section id="article_section" className="lg:w-3/4">
         <Article />
         <Article />
@@ -13,31 +13,32 @@ const Home = () => {
         <Article />
         <Article />
       </section>
-      <section className="lg:w-1/4">
-        <h1 className="text-sm font-bold mb-4 flex justify-left items-center gap-2">
+      <section className="lg:w-1/4 border shadow-sm h-dvh bg-gray-50 rounded-md p-4">
+        <h1 className="text-sm font-bold mb-3 flex justify-left items-center align-middle gap-2 border-b">
           <span>
             <IoFilter />
           </span>{" "}
           Filter
         </h1>
+
         <nav>
           <button
             to="/"
-            className="block mb-2 px-2 py-1 border rounded-md text-xs hover:bg-gray-200"
+            className=" mb-1 px-2 py-1 rounded-sm text-xs hover:bg-gray-200"
           >
-            category sample
+            filter btn
           </button>
           <button
             to="/"
-            className="block mb-2 px-2 py-1 border rounded-md text-xs hover:bg-gray-200"
+            className=" mb-1 px-2 py-1 rounded-sm text-xs hover:bg-gray-200"
           >
-            category sample
+            filter btn
           </button>
           <button
             to="/"
-            className="block mb-2 px-2 py-1 border rounded-md text-xs hover:bg-gray-200"
+            className=" mb-1 px-2 py-1  rounded-sm text-xs hover:bg-gray-200"
           >
-            category sample
+            filter btn
           </button>
         </nav>
       </section>

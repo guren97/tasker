@@ -21,7 +21,7 @@ const Article = () => {
           </div>
           <div className="flex items-center justify-between mb-1 w-full md:w-3/4 lg:w-full">
             <span className="text-xs font-normal text-slate-600">
-              Author: <span className="font-bold">Gwen</span>
+              author: <span className="font-bold">Gwen</span>
             </span>
             <span className="text-xs font-normal text-slate-600 ">
               <span className="">April 14, 2024</span>
@@ -31,7 +31,7 @@ const Article = () => {
       </section>
 
       <section id="article_content" className="py-1 mb-4">
-        <p className="w-full mt-4">
+        <p className="w-full mt-4 text-sm">
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Optio
           explicabo in similique a quaerat nisi qui deleniti molestiae sunt
           pariatur doloremque officiis reprehenderit quis, distinctio
@@ -40,9 +40,11 @@ const Article = () => {
       </section>
       <section className="flex justify-end ">
         <div>
-          <span className="text-xs">Tags: </span>
-          <button className="  mb-2 px-2  py-1 border rounded-md text-xs hover:bg-gray-200">
-            <span className="text-xs">category</span>
+          <span className="text-xs">tags: </span>
+          <button className="  mb-1 -ml-1 px-2  py-1  text-blue-600 rounded-sm text-xs ">
+            <p className="text-xs flex items-center justify-center">
+              <span>tag </span>
+            </p>
           </button>
         </div>
       </section>

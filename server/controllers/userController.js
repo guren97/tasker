@@ -41,6 +41,9 @@ const setUser = asyncHandler(async (req, res, next) => {
       res.status(201).json({
         _id: user.id,
         username: user.username,
+        user_role: user.user_role,
+        first_name: user.first_name,
+        last_name: user.last_name,
         email: user.email,
       });
     }
@@ -124,6 +127,10 @@ const loginUser = asyncHandler(async (req, res, next) => {
     // Find user by email and select password field
     const user = await User.findOne({ email }).select("+password");
 
+    if (user.email !== email) {
+      return next(new ErrorResponse("User not found", 404));
+    }
+
     if (!user) {
       // Send error response if user not found
       return next(new ErrorResponse("Invalid email", 401));
@@ -144,6 +151,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
       res.status(201).json({
         _id: user.id,
         username: user.username,
+        user_role: user.user_role,
+        first_name: user.first_name,
+        last_name: user.last_name,
         email: user.email,
       });
     }

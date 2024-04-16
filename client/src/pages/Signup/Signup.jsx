@@ -1,4 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useRegisterMutation } from "../../redux/slices/usersApiSlice.js";
+import { setCredentials } from "../../redux/slices/authSlice.js";
+import { toast } from "sonner";
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -8,20 +14,52 @@ const Signup = () => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth || {});
+  const [register] = useRegisterMutation();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/dashboard");
+    }
+  }, [userInfo, navigate]);
+
   const handleChange = (e) => {
     setFormData((formData) => ({
       ...formData,
       [e.target.id]: e.target.value,
     }));
   };
-  console.log(formData);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await register({ ...formData }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate("/dashboard");
+      toast.success("Registration successful");
+    } catch (err) {
+      let errorMessage = "An error occurred";
+      if (err && err.data && err.data.error) {
+        errorMessage = err.data.error;
+      }
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <main className="mx-auto  h-dvh max-w-7xl px-6 py-6 lg:px-6 -mt-14">
-      <div className="py-16 m-12 justify-between gap-4 h-full ">
+    <main className="mx-auto  h-dvh max-w-7xl px-6 py-6 lg:px-6 -mt-16">
+      <div className=" justify-between gap-4  ">
         <form
-          className="  max-w-md min-w-96 m-auto flex flex-col gap-4 bg-white p-6 shadow-md  mb-0 px-8"
-          action=""
+          className="max-w-md min-w-96 m-auto flex flex-col gap-4 bg-white p-6 shadow-md  mb-0 px-8 mt-16"
+          onSubmit={handleSubmit}
         >
           <section className="  p-2 text-center mt-2 rounded-sm">
             <h1 className="text-2xl">Sign up</h1>
@@ -37,7 +75,7 @@ const Signup = () => {
               onChange={handleChange}
             />
           </section>
-          <section className="flex  gap-6">
+          <section className="block lg:flex gap-6">
             <section className="w-full flex flex-col gap-2">
               <label htmlFor="login">First Name</label>
               <input
@@ -88,8 +126,9 @@ const Signup = () => {
           <button
             className="border p-2 w-full sm:w-full md:w-full mt-4 bg-gray-900 hover:bg-gray-800 text-white font-medium  rounded-sm"
             type="submit"
+            disabled={loading}
           >
-            Sign up
+            {loading ? "Registering user..." : "Registration successful"}
           </button>
         </form>
       </div>

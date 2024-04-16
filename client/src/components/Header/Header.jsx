@@ -1,33 +1,41 @@
-import logo_dark from "../../assets/logo/logo_dark.svg";
+import { IoCaretDownOutline } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { useLogoutMutation } from "../../redux/slices/usersApiSlice.js";
 import { logout } from "../../redux/slices/authSlice.js";
-
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import NavLink from "./NavLink.jsx";
+import logo_dark from "../../assets/logo/logo_dark.svg";
 
 const Header = () => {
+  // Toggle menu for mobile view - small screen
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { userInfo } = useSelector((state) => state.auth);
   const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {
     try {
-      setTimeout(async () => {
-        await logoutApiCall();
-        dispatch(logout());
-        navigate("/", { replace: true });
-      }, 1000);
+      await logoutApiCall();
+      dispatch(logout());
+      navigate("/");
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -36,7 +44,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-    // Close the mobile menu when route changes
     setIsOpen(false);
   }, [location.pathname]);
 
@@ -77,38 +84,59 @@ const Header = () => {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {/* Navigation links */}
-          <div className="relative">
-            <NavLink to="/">Home</NavLink>
-          </div>
-          <NavLink to="/">Articles</NavLink>
+          {userInfo ? (
+            <div className="relative flex gap-4">
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/dashboard">Dashboard</NavLink>
+            </div>
+          ) : (
+            <div className="relative flex gap-4">
+              <NavLink to="/">Home</NavLink>
+            </div>
+          )}
         </div>
+
         {userInfo ? (
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
-            <NavLink to="#" className={`  px-3 py-1 text-md font-semibold`}>
-              {userInfo.username}
-            </NavLink>
-            <NavLink
-              className={`border px-3 py-1 rounded-md hover:bg-gray-200`}
-              onClick={logoutHandler}
-            >
-              Logout
-            </NavLink>
-          </div>
+          <>
+            <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-1">
+              <div className="">
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <div className="flex items-center ">
+                      <DropdownMenuLabel>{userInfo.username}</DropdownMenuLabel>
+                      <IoCaretDownOutline />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <NavLink to="/profile">Profile</NavLink>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logoutHandler}>
+                      <span className="font-medium">Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </>
         ) : (
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
-            <NavLink
-              to="/login"
-              className={`border px-3 py-1 rounded-md hover:bg-gray-200`}
-            >
-              Log in
-            </NavLink>
-            <NavLink
-              to="/signup"
-              className={`bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-400`}
-            >
-              Sign up
-            </NavLink>
-          </div>
+          <>
+            <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
+              <NavLink
+                to="/login"
+                className={`border px-3 py-1 rounded-md hover:bg-gray-100`}
+              >
+                Log in
+              </NavLink>
+              <NavLink
+                to="/signup"
+                className={`bg-slate-800 text-white px-3 py-1 rounded-md hover:bg-slate-700`}
+              >
+                Sign up
+              </NavLink>
+            </div>
+          </>
         )}
       </nav>
 
@@ -120,11 +148,13 @@ const Header = () => {
           aria-modal="true"
         >
           {/* Background backdrop */}
-          <div className="fixed inset-0 z-10"></div>
+          <div
+            className="fixed inset-0 z-10 bg-gray-900/30 bg-blend-color-burn"
+            onClick={() => setIsOpen(!isOpen)}
+          ></div>
           <div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-4 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
               <Link to="" className="-m-1.5 p-1.5">
-                <span className="sr-only">Your Company</span>
                 <img className="h-8 w-auto" src={logo_dark} alt="logo" />
               </Link>
               <button
@@ -151,21 +181,39 @@ const Header = () => {
             </div>
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
-                <div className="space-y-2 py-6">
-                  {/* Product sub-menu */}
-                  <Link
-                    to="/"
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/"
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Articles
-                  </Link>
-                </div>
+                {userInfo ? (
+                  <div className="space-y-2 py-4">
+                    <Link
+                      to="/"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Profile
+                    </Link>
+
+                    <Link
+                      to="/dashboard"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Dashboard
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-2 py-6">
+                    <Link
+                      to="/"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Home
+                    </Link>
+                  </div>
+                )}
+
                 {userInfo ? (
                   // If user is logged in, show logout button
                   <div className="py-6">

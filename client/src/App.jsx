@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header/Header.jsx";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import "./App.css";
 
 function App() {
   return (
     <div
-      className="w-full bg-gray-50 overflow-y-auto"
+      className="app-container w-full bg-gray-100 overflow-y-auto"
       style={{ OverflowStyle: "none", scrollbarWidth: "none" }}
     >
       <Header />
